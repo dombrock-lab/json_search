@@ -1,0 +1,41 @@
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+<input type="text" oninput="search()" id="input">
+<div id="results"></div>
+<script>
+function search(){
+    console.log("search:"+$('#input').val()+":");
+    $.ajax({url: "/api/search/"+$('#input').val(), success: function(result){
+        if(result=="NO_QUERY"){
+            $("#results").html("WAITING FOR INPUT...");
+        }else if(result=="[]"){
+            $("#results").html("NO APPLICABLE RESULTS...");
+        }
+        else{
+            //$("#results").html(result);
+            result = JSON.parse(result);
+            var output = "";
+            for (item in result){
+                output += "<ul>";
+                output += "<li>Name: "+result[item].name+"</li>";
+                output += "<li>Description: "+result[item].description+"</li>";
+                output += "<li>URL: <a href='"+result[item].data+"'>"+result[item].data+"</a></li>";
+                output += "<li>Tags: "+result[item].tags+"</li>";
+                output += "<li>Score: "+result[item].score+"</li>";
+                output += "</ul>";
+
+            }
+            $("#results").html(output);
+        }     
+    }});
+}
+search();
+</script>
+<style>
+body, input{
+    font-family: "Lucida Console", Monaco, monospace;
+}
+</style>
